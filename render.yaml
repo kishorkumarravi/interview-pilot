@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: interview-pilot-api
+    runtime: python
+    region: oregon
+    plan: free
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: sqlite:///./interview_pilot.db
+      - key: SECRET_KEY
+        generateValue: true
+      - key: AUTH_PASSWORD
+        sync: false
+      - key: AI_PROVIDER
+        value: demo
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+    disk:
+      name: data
+      mountPath: /opt/render/project/src
+      sizeGB: 1
