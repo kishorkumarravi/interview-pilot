@@ -26,6 +26,21 @@ def register(req: RegisterRequest, db: Session = Depends(get_db)):
     token = create_access_token({"sub": str(user.id)})
     return TokenResponse(access_token=token, name=user.name)
 
+@router.get("/users")
+def list_users(
+    skip: int = 0,
+    limit: int = 20,
+    db: Session = Depends(get_db)
+):
+    users = (
+        db.query(User)
+        .order_by(User.created_at.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+    return users
 
 @router.post("/login", response_model=TokenResponse)
 def login(req: LoginRequest, db: Session = Depends(get_db)):
